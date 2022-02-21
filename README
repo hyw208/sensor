@@ -1,0 +1,70 @@
+TODO:
+5. see how to dump prometheus data to csv
+7. fix mqtt session or connection failure
+8. enhance sub.py, instead of using os cmd, use https://github.com/prometheus/client_python, prom_client.py
+9. containerize pub and sub 
+
+DONE: 
+1. fix arduino publisher to use mqtt and json (done)
+2. fix sub to write to exporter/sensor.prom (done)
+3. check if prom picks up the metrics (done)
+4. bring up grafana and query prometheus, build a simple visualization (done)
+6. use docker compose to start all containers (done)
+10. externalize ip:192.168.1.156, wifi info etc (done)
+
+Folders
+1. data: prometheus data folder
+2. exporter: node exporter text collector, *.prom (touching or creating new will cause metrics to be sourced by prometheus)
+3. grafana: data folder
+4. arduino: code, config for sensor controllers, using mqtt & json
+
+How to run
+0. hydroponics2 folder
+1. start: docker-compose up (in the directory where docker-compose.yaml is)
+2. stop: docker-compose stop
+
+Components
+1. hivemq: (broker/server)
+        run 'docker run -p 8080:8080 -p 1883:1883 hivemq/hivemq4'
+        ** can access ui via http://localhost:8080 or http://0.0.0.0:8080 locally, or http://192.168.1.156:8080  
+        ** admin/hivemq for credential
+        ** mqtt client 1883 port 
+
+2. publisher (faking arduino), https://www.emqx.com/en/blog/comparision-of-python-mqtt-client (paho-mqtt)
+        ** i created a conda env 'hydroponics2' on mac air under path '/Users/blanca/Documents/source/hydroponics2'
+        ** conda create -n hydroponics2 python=3.9 dash
+        ** conda activate hydroponics2
+        ** conda install -c conda-forge paho-mqtt
+
+        python -m pub
+
+3. subscriber (sub to sensor/json, writes to exporter text collector), https://www.emqx.com/en/blog/comparision-of-python-mqtt-client (paho-mqtt)
+
+        python -m sub
+
+4. prometheus, used to store metrics
+    ** run 'docker run -d --name=prometheus -p 9090:9090 -v /Users/blanca/Documents/source/hydroponics2/data:/prometheus/data -v /Users/blanca/Documents/source/hydroponics2/prometheus.yml:/etc/prometheus/prometheus.yml prom/prometheus --config.file=/etc/prometheus/prometheus.yml'
+
+    ** backup all data, it seems http://0.0.0.0:9090/metrics has all data
+
+5. prometheus exporter text collector
+    ** text format, https://prometheus.io/docs/instrumenting/exposition_formats/ 
+
+    HOW to: 
+        echo my_batch_job_completion_time $(date +%s) > /path/to/directory/my_batch_job.prom.$$
+        mv /path/to/directory/my_batch_job.prom.$$ /path/to/directory/my_batch_job.prom
+
+    START: 
+        docker run -d -p 9100:9100 -v /Users/blanca/Documents/source/hydroponics2/exporter:/tmp prom/node-exporter --collector.textfile.directory=/tmp/
+
+6. grafana
+    docker run -d -p 3000:3000 -v /Users/blanca/Documents/source/hydroponics2/grafana:/var/lib/grafana grafana/grafana-oss 
+
+    ** TODO: see how to avoid manually config data source and dashboard, https://grafana.com/docs/grafana/latest/administration/configure-docker/
+
+7. arduino the publisher, upload to mkr 1010, 
+    topic: 'sensor/json'
+
+
+Reference: 
+1. https://github.com/stefanprodan/dockprom/blob/master/docker-compose.yml

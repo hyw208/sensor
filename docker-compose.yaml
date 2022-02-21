@@ -1,0 +1,43 @@
+version: "3.9"
+services: 
+  mqttbroker:
+    image: hivemq/hivemq4
+    restart: always    
+    ports:
+      - "8080:8080"
+      - "1883:1883"
+  prometheus: 
+    image: prom/prometheus 
+    restart: always    
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus:/prometheus/data
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--web.enable-lifecycle'      
+  nodeexporter:
+    image: prom/node-exporter
+    restart: always    
+    volumes: 
+      - ./exporter:/exporter
+    command: 
+      - '--collector.textfile.directory=/exporter'
+    ports:
+      - "9100:9100"      
+  grafana:
+    image: grafana/grafana-oss
+    restart: always
+    volumes: 
+      - ./grafana:/var/lib/grafana
+    environment:
+      - GF_SECURITY_ADMIN_USER=${ADMIN_USER}
+      - GF_SECURITY_ADMIN_PASSWORD=${ADMIN_PASSWORD}
+      - GF_USERS_ALLOW_SIGN_UP=false      
+    ports:
+      - "3000:3000"
+
+# https://github.com/stefanprodan/dockprom
