@@ -1,5 +1,7 @@
 version: "3.9"
 services: 
+  mqttsubscriber: # move sensor data from mqtt broker to node exporter
+    build: .
   mqttbroker:
     image: hivemq/hivemq4
     restart: always    

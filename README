@@ -19,9 +19,10 @@ Folders
 4. arduino: code, config for sensor controllers, using mqtt & json
 
 How to run
-0. hydroponics2 folder
-1. start: docker-compose up (in the directory where docker-compose.yaml is)
-2. stop: docker-compose stop
+1. git clone the project
+2. ./prep.sh (and answer questions to get some values replaced properly)
+3. docker-compose up
+
 
 Components
 1. hivemq: (broker/server)

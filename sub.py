@@ -13,21 +13,11 @@ def on_message(client, userdata, msg):
     d = json.loads(txt)
     dump2(d)
 
-def dump(d):
-    #### DOESN"T WORK, it has to be dump2, otherwise node exporter doesn't pick it up
-    print(str(d))
-    client = d["client"]
-    with open('./exporter/{}_temp.prom.1'.format(client), 'w') as f: 
-        f.write("arduino_air_temperature{{client=\"{client}\"}} {temp:.2f} \n".format(client=client, temp=d["temp"]))
-
-    with open('./exporter/{}_lumen.prom.1'.format(client), 'w') as f: 
-        f.write("arduino_luminosity{{client=\"{client}\"}} {lumen:.2f} \n".format(client=client, lumen=d["lumen"]))
-
 def dump2(d):
     import os
     print(str(d))
     client = d["client"]
-    path = './exporter'
+    path = '/exporter'
     cmd = "echo" + " 'arduino_luminosity{{client=\"{client}\"}} {lumen:.2f}' ".format(client=client, lumen=d["lumen"]) + " > " + " {}/{}_lumen.prom ".format(path, client)
     print(cmd)
     os.system(cmd)
