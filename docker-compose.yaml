@@ -1,6 +1,6 @@
 version: "3.9"
 services: 
-  mqttsubscriber: # move sensor data from mqtt broker to node exporter
+  mqttclient: # move sensor data from mqtt broker to node exporter
     build: .
     command: python -m sub
     volumes: 
