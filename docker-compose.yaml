@@ -2,6 +2,9 @@ version: "3.9"
 services: 
   mqttsubscriber: # move sensor data from mqtt broker to node exporter
     build: .
+    command: python -m sub
+    volumes: 
+      - ./exporter:/exporter # need to write *.prom so node exporter textfile collector can pick up metrics    
   mqttbroker:
     image: hivemq/hivemq4
     restart: always    
@@ -36,8 +39,6 @@ services:
     volumes: 
       - ./grafana:/var/lib/grafana
     environment:
-      - GF_SECURITY_ADMIN_USER=${ADMIN_USER}
-      - GF_SECURITY_ADMIN_PASSWORD=${ADMIN_PASSWORD}
       - GF_USERS_ALLOW_SIGN_UP=false      
     ports:
       - "3000:3000"
