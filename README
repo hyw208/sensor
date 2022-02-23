@@ -25,7 +25,7 @@ How to run
 1. git clone the project
 2. ./prep.sh (and answer questions to get some values replaced properly)
 3. docker-compose up (this will also build a docker image 'mqttsubscriber')
-4. start your arduino controller to send sensor metrics to mqtt broker, 
+4. upload code & start your arduino controller to send sensor metrics to mqtt broker, 
     if you don't have arduino, use pub.py to send fake sensor readings, 
     'docker run -d sensor_mqttclient python -m pub'
 
