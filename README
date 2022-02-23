@@ -3,6 +3,7 @@ TODO:
 8. enhance sub.py, instead of using os cmd, use https://github.com/prometheus/client_python, prom_client.py
 11. add diagram, picture of hydroponics
 12. add arduino part
+13. add logging to sub.py
 
 DONE: 
 1. fix arduino publisher to use mqtt and json (done)
