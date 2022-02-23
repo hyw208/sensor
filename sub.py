@@ -5,7 +5,10 @@ import logging
 from logging.handlers import TimedRotatingFileHandler
 
 path = os.environ['logger_path']
+
+formatter = logging.Formatter('%(asctime)s - %(message)s')
 handler = TimedRotatingFileHandler(path, when="D", interval=1, backupCount=30)
+handler.setFormatter(formatter)
 
 log = logging.getLogger(__name__)
 log.setLevel(logging.INFO)
