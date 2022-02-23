@@ -59,11 +59,10 @@ void setup() {
   Serial.print("Attempting to connect to the MQTT broker: ");
   Serial.println(broker);
 
-  if (!mqttClient.connect(broker, port)) {
+  while (!mqttClient.connect(broker, port)) {
     Serial.print("MQTT connection failed! Error code = ");
     Serial.println(mqttClient.connectError());
-
-    while (1);
+    delay(5000);
   }
 
   Serial.println("You're connected to the MQTT broker!");
@@ -71,9 +70,17 @@ void setup() {
 }
 
 void loop() {
-  // call poll() regularly to allow the library to send MQTT keep alives which
-  // avoids being disconnected by the broker
-  mqttClient.poll();
+  if (!mqttClient.connected()) {
+    while (!mqttClient.connect(broker, port)) {
+      Serial.print("MQTT connection failed! Error code = ");
+      Serial.println(mqttClient.connectError());
+      delay(5000);
+    }    
+  } else {
+    // call poll() regularly to allow the library to send MQTT keep alives which
+    // avoids being disconnected by the broker
+    mqttClient.poll();
+  }
 
   // to avoid having delays in loop, we'll use the strategy from BlinkWithoutDelay
   // see: File -> Examples -> 02.Digital -> BlinkWithoutDelay for more info
