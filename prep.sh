@@ -2,7 +2,7 @@
 
 ##################################################
 # create needed directories
-mkdir -p exporter grafana prometheus
+mkdir -p exporter grafana prometheus logging
 
 ##################################################
 # replace ip address, for mac only

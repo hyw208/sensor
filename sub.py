@@ -1,5 +1,15 @@
 import paho.mqtt.client as mqtt
 import json
+import os
+import logging
+from logging.handlers import TimedRotatingFileHandler
+
+path = os.environ['logger_path']
+handler = TimedRotatingFileHandler(path, when="D", interval=1, backupCount=30)
+
+log = logging.getLogger(__name__)
+log.setLevel(logging.INFO)
+log.addHandler(handler)
 
 # The callback function of connection
 def on_connect(client, userdata, flags, rc):
@@ -11,6 +21,9 @@ def on_message(client, userdata, msg):
     # print(type(msg.payload)) -> bytes
     txt = msg.payload.decode("utf-8")
     d = json.loads(txt)
+    # troubleshoot
+    log.info(d)
+    # for node exporter to pick up
     dump2(d)
 
 def dump2(d):

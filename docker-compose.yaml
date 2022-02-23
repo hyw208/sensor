@@ -4,7 +4,10 @@ services:
     build: .
     command: python -m sub
     volumes: 
-      - ./exporter:/exporter # need to write *.prom so node exporter textfile collector can pick up metrics    
+      - ./exporter:/exporter # need to write *.prom so node exporter textfile collector can pick up metrics   
+      - ./logging:/logging
+    environment:
+      - logger_path=/logging
   mqttbroker:
     image: hivemq/hivemq4
     restart: always    
