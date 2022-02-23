@@ -36,15 +36,11 @@ Components
 
 2. publisher (faking arduino), https://www.emqx.com/en/blog/comparision-of-python-mqtt-client (paho-mqtt)
         run: 
-            1. docker run -d mqttsubscriber python -m pub 
+            1. docker run -d sensor_mqttclient python -m pub 
             or 
             2. create python env with package in docker file locally and run 'python -m pub'
 
-3. subscriber (sub to sensor/json, writes to exporter text collector), https://www.emqx.com/en/blog/comparision-of-python-mqtt-client (paho-mqtt)
-        run: 
-            1. part of the docker-compose
-            additionally 
-            2. create python env with package in docker file locally and run 'python -m sub'
+3. subscriber, gets metrics from topic 'sensor/json' and writes to exporter directory, https://www.emqx.com/en/blog/comparision-of-python-mqtt-client (paho-mqtt)
 
 4. prometheus, used to store metrics
 
