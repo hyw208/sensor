@@ -29,6 +29,7 @@ How to run
 4. upload code & start your arduino controller to send sensor metrics to mqtt broker, 
     if you don't have arduino, use pub.py to send fake sensor readings, 
     'docker run -d sensor_mqttclient python -m pub'
+5. if you need to change code, you need to rebuild mqttclient
 
 Components
 1. hivemq: (broker/server)
