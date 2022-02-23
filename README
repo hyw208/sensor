@@ -1,8 +1,7 @@
 TODO:
 5. see how to dump prometheus data to csv
-7. fix mqtt session or connection failure
 8. enhance sub.py, instead of using os cmd, use https://github.com/prometheus/client_python, prom_client.py
-9. containerize pub and sub 
+11. add diagram, picture of hydroponics
 
 DONE: 
 1. fix arduino publisher to use mqtt and json (done)
@@ -10,6 +9,8 @@ DONE:
 3. check if prom picks up the metrics (done)
 4. bring up grafana and query prometheus, build a simple visualization (done)
 6. use docker compose to start all containers (done)
+7. fix mqtt session or connection failure (done)
+9. containerize pub and sub (done)
 10. externalize ip:192.168.1.156, wifi info etc (done)
 
 Folders
