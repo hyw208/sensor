@@ -3,7 +3,6 @@ TODO:
 8. enhance sub.py, instead of using os cmd, use https://github.com/prometheus/client_python, prom_client.py
 11. add diagram, picture of hydroponics
 12. add arduino part
-13. add logging to sub.py
 14. fix instruction, need to run pub.py first to get some metrics, add config for grafana
 
 DONE: 
@@ -15,6 +14,7 @@ DONE:
 7. fix mqtt session or connection failure (done)
 9. containerize pub and sub (done)
 10. externalize ip:192.168.1.156, wifi info etc (done)
+13. add logging to sub.py (done)
 
 Folders
 1. arduino: code, config for sensor controller using mqtt & json
