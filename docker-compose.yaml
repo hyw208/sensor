@@ -8,6 +8,8 @@ services:
       - ./logging:/logging
     environment:
       - logger_path=/logging/subscriber
+    depends_on:
+      - mqttbroker
   mqttbroker:
     image: hivemq/hivemq4
     restart: always    
