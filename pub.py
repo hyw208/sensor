@@ -9,11 +9,11 @@ def on_connect(client, userdata, flags, rc):
 client = mqtt.Client()
 client.on_connect = on_connect
 client.connect("IP_ADDRESS", 1883, 60)
-for i in range(10):
+for i in range(300):
     d = {'client': 'mrk-1010-mock1', 'temp': 29.78515625+i, 'lumen': 179+i}
     txt = json.dumps(d)
     client.publish('sensor/json', payload=txt, qos=0, retain=False)
     print(f"sent data", str(d))
-    time.sleep(5)
+    time.sleep(3)
 
 #client.loop_forever()
