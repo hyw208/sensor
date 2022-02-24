@@ -97,9 +97,9 @@ void loop() {
 //    mqttClient.print(count);
 
 //===================================
-    // temp
-    float v = analogRead(T_PIN) * (5000/1024.0);
-    float t = v / 10;
+    // temp, https://protosupplies.com/product/lm35-analog-temp-sensor/
+    float tc = (analogRead(T_PIN)/1024.0) * 3.3 * 100;
+    float tf = (tc/5) * 9 + 32
     
     // lumen
     float l = analogRead(L_PIN);    
@@ -107,7 +107,7 @@ void loop() {
 //===================================
     DynamicJsonDocument doc(256); 
     doc["client"] = clientId;
-    doc["temp"]= t;
+    doc["temp"]= tf;
     doc["lumen"]= l;
     
     char json[256];
