@@ -1,3 +1,45 @@
+Folders
+1. arduino: code, config for sensor controller using mqtt & json
+2. exporter: node exporter text collector, *.prom (touching or creating new will cause metrics to be sourced by prometheus)
+3. grafana: data folder
+4. prometheus: prometheus data folder
+
+How to run
+1. git clone the project
+2. ./prep.sh (answer questions to get values replaced properly)
+3. docker-compose up (this will also build a docker image 'sensor_mqttclient') ** if you need to modify code, eg. sub.py, 
+4. use arduino ide to upload code & start your arduino controller to send sensor metrics to mqtt broker, if you don't have arduino, use pub.py to send fake sensor readings, 'docker run -d sensor_mqttclient python -m pub'
+5. if you need to change code, you need to rebuild mqttclient, eg. 'docker-compose build mqttlclient --no-cache'
+
+Components
+1. hivemq: (broker/server)
+        ui access: http://<ip address>:8080
+        credential: admin/hivemq
+
+2. publisher (faking arduino), https://www.emqx.com/en/blog/comparision-of-python-mqtt-client (paho-mqtt)
+        run: docker run -d sensor_mqttclient python -m pub 
+
+3. subscriber, gets metrics from topic 'sensor/json' and writes to exporter directory, https://www.emqx.com/en/blog/comparision-of-python-mqtt-client (paho-mqtt)
+        run: docker run -d sensor_mqttclient python -m sub ** it's part of docker compose already 
+
+4. prometheus, used to store metrics
+        ui access: http://<ip address>:9090
+
+5. prometheus exporter text collector
+        ** text format, https://prometheus.io/docs/instrumenting/exposition_formats/ 
+        ui access: http://<ip address>:9100
+
+6. grafana
+        ** TODO: see how to avoid manually config data source and dashboard, https://grafana.com/docs/grafana/latest/administration/configure-docker/
+        ui access: http://<ip address>:9100
+        credential: admin/admin
+
+7. arduino the publisher, upload to mkr 1010, 
+        topic: 'sensor/json'
+
+Reference: 
+1. docker-compose: https://github.com/stefanprodan/dockprom/blob/master/docker-compose.yml
+
 TODO:
 5. see how to dump prometheus data to csv
 8. enhance sub.py, instead of using os cmd, use https://github.com/prometheus/client_python, prom_client.py
@@ -15,48 +57,3 @@ DONE:
 9. containerize pub and sub (done)
 10. externalize ip:192.168.1.156, wifi info etc (done)
 13. add logging to sub.py (done)
-
-Folders
-1. arduino: code, config for sensor controller using mqtt & json
-2. exporter: node exporter text collector, *.prom (touching or creating new will cause metrics to be sourced by prometheus)
-3. grafana: data folder
-4. prometheus: prometheus data folder
-
-How to run
-1. git clone the project
-2. ./prep.sh (and answer questions to get some values replaced properly)
-3. docker-compose up (this will also build a docker image 'mqttsubscriber')
-4. upload code & start your arduino controller to send sensor metrics to mqtt broker, 
-    if you don't have arduino, use pub.py to send fake sensor readings, 
-    'docker run -d sensor_mqttclient python -m pub'
-5. if you need to change code, you need to rebuild mqttclient
-
-Components
-1. hivemq: (broker/server)
-        access: http://<ip address>:8080
-        credential: admin/hivemq
-
-2. publisher (faking arduino), https://www.emqx.com/en/blog/comparision-of-python-mqtt-client (paho-mqtt)
-        run: 
-            1. docker run -d sensor_mqttclient python -m pub 
-            or 
-            2. create python env with package in docker file locally and run 'python -m pub'
-
-3. subscriber, gets metrics from topic 'sensor/json' and writes to exporter directory, https://www.emqx.com/en/blog/comparision-of-python-mqtt-client (paho-mqtt)
-
-4. prometheus, used to store metrics
-
-5. prometheus exporter text collector
-    ** text format, https://prometheus.io/docs/instrumenting/exposition_formats/ 
-    HOW to: 
-        echo my_batch_job_completion_time $(date +%s) > /path/to/directory/my_batch_job.prom.$$
-        mv /path/to/directory/my_batch_job.prom.$$ /path/to/directory/my_batch_job.prom
-
-6. grafana
-    ** TODO: see how to avoid manually config data source and dashboard, https://grafana.com/docs/grafana/latest/administration/configure-docker/
-
-7. arduino the publisher, upload to mkr 1010, 
-    topic: 'sensor/json'
-
-Reference: 
-1. https://github.com/stefanprodan/dockprom/blob/master/docker-compose.yml
