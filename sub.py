@@ -42,7 +42,8 @@ def dump2(d):
     print(cmd)
     os.system(cmd)
 
-client = mqtt.Client()
+clientId = "subscriber"
+client = mqtt.Client(clientId)
 client.on_connect = on_connect
 client.on_message = on_message
 client.connect("IP_ADDRESS", 1883, 60)

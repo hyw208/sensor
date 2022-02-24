@@ -6,7 +6,8 @@ def on_connect(client, userdata, flags, rc):
     print(f"Connected with result code {rc}")
 
 # this is a fake publisher if you don't have arduino to pump sensor data
-client = mqtt.Client()
+clientId = "publisher"
+client = mqtt.Client(clientId)
 client.on_connect = on_connect
 client.connect("IP_ADDRESS", 1883, 60)
 for i in range(300):
