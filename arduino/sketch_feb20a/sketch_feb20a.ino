@@ -40,14 +40,14 @@ void setup() {
   // attempt to connect to WiFi network:
   Serial.print("Attempting to connect to WPA SSID: ");
   Serial.println(ssid);
+
   while (WiFi.begin(ssid, pass) != WL_CONNECTED) {
-    // failed, retry
-    Serial.print(".");
+    Serial.print("WiFi connection failed! Error code = ");
+    Serial.println(WiFi.status());
     delay(5000);
   }
-
-  Serial.println("You're connected to the network");
-  Serial.println();
+  Serial.print("You're connected to the WiFi network ");
+  Serial.println(ssid);
 
   // You can provide a unique client ID, if not set the library uses Arduino-millis()
   // Each client must have a unique client ID
@@ -64,18 +64,28 @@ void setup() {
     Serial.println(mqttClient.connectError());
     delay(5000);
   }
-
   Serial.println("You're connected to the MQTT broker!");
   Serial.println();
 }
 
 void loop() {
   if (!mqttClient.connected()) {
+    if (WiFi.status() != WL_CONNECTED) {
+      while (WiFi.begin(ssid, pass) != WL_CONNECTED) {
+        Serial.print("WiFi connection failed! Error code = ");
+        Serial.println(WiFi.status());
+        delay(5000);
+      }
+      Serial.print("You're connected to the WiFi network ");
+      Serial.println(ssid);
+    }
     while (!mqttClient.connect(broker, port)) {
       Serial.print("MQTT connection failed! Error code = ");
       Serial.println(mqttClient.connectError());
       delay(5000);
-    }    
+    }
+    Serial.println("You're connected to the MQTT broker!");
+    Serial.println(); 
   } else {
     // call poll() regularly to allow the library to send MQTT keep alives which
     // avoids being disconnected by the broker
