@@ -99,7 +99,7 @@ void loop() {
 //===================================
     // temp, https://protosupplies.com/product/lm35-analog-temp-sensor/
     float tc = (analogRead(T_PIN)/1024.0) * 3.3 * 100;
-    float tf = (tc/5) * 9 + 32
+    float tf = (tc/5) * 9 + 32;
     
     // lumen
     float l = analogRead(L_PIN);    
