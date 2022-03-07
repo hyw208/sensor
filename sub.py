@@ -50,6 +50,6 @@ clientId = "subscriber"
 client = mqtt.Client(clientId)
 client.on_connect = on_connect
 client.on_message = on_message
-client.connect("192.168.1.180", 1883, 60)
+client.connect("IP_ADDRESS", 1883, 60)
 client.loop_forever()
 
