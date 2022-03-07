@@ -42,7 +42,7 @@ def dump2(d):
     print(cmd)
     os.system(cmd)
 
-    cmd = "echo" + " 'arduino_air_humidity{{client=\"{client}\"}} {humidity:.2f}' ".format(client=client, temp=d.get("humidity", 0)) + " > " + " {}/{}_humidity.prom ".format(path, client)
+    cmd = "echo" + " 'arduino_air_humidity{{client=\"{client}\"}} {humidity:.2f}' ".format(client=client, humidity=d["humidity"]) + " > " + " {}/{}_humidity.prom ".format(path, client)
     print(cmd)
     os.system(cmd)
 
