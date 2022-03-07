@@ -9,7 +9,7 @@ How to run
 2. ./prep.sh (answer questions to get values replaced properly)
 3. docker-compose up (this will also build a docker image 'sensor_mqttclient') ** if you need to modify code, eg. sub.py, 
 4. use arduino ide to upload code & start your arduino controller to send sensor metrics to mqtt broker, if you don't have arduino, use pub.py to send fake sensor readings, 'docker run -d sensor_mqttclient python -m pub'
-5. if you need to change code, you need to rebuild mqttclient, eg. 'docker-compose build mqttlclient --no-cache'
+5. if you need to change code, you need to rebuild mqttclient, eg. 'docker-compose build mqttclient --no-cache'
 
 Components
 1. hivemq: (broker/server)
