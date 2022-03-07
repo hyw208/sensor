@@ -1,17 +1,19 @@
 #include <ArduinoMqttClient.h>
-#if defined(ARDUINO_SAMD_MKRWIFI1010) || defined(ARDUINO_SAMD_NANO_33_IOT) || defined(ARDUINO_AVR_UNO_WIFI_REV2)
-  #include <WiFiNINA.h>
-#elif defined(ARDUINO_SAMD_MKR1000)
-  #include <WiFi101.h>
-#elif defined(ARDUINO_ESP8266_ESP12)
-  #include <ESP8266WiFi.h>
-#endif
+#include <WiFiNINA.h>
 #include <ArduinoJson.h>
 #include "arduino_secrets.h"
 
-#define T_PIN A1
-#define L_PIN A3
+//===================================
+#include "Adafruit_VEML7700.h"
+Adafruit_VEML7700 veml = Adafruit_VEML7700();
+bool veml_detected = false;
 
+//===================================
+#include <Adafruit_AHTX0.h>
+Adafruit_AHTX0 aht;
+bool aht_detected = false;
+
+//===================================
 char ssid[] = SECRET_SSID;    // your network SSID (name)
 char pass[] = SECRET_PASS;    // your network password (use for WPA, or use as key for WEP)
 
@@ -30,12 +32,8 @@ unsigned long previousMillis = 0;
 int count = 0;
 
 void setup() {
-  //TO BE COMMENT OUT
-  //Initialize serial and wait for port to open:
-//  Serial.begin(9600);
-//  while (!Serial) {
-//    ; // wait for serial port to connect. Needed for native USB port only
-//  }
+  //
+  Serial.begin(115200);
 
   // attempt to connect to WiFi network:
   Serial.print("Attempting to connect to WPA SSID: ");
@@ -66,6 +64,27 @@ void setup() {
   }
   Serial.println("You're connected to the MQTT broker!");
   Serial.println();
+
+  //===================================
+  if (!veml.begin()) {
+    Serial.print("Light sensor not found");
+  } else {
+    Serial.print("Light sensor found");
+    veml_detected = true;
+    veml.setGain(VEML7700_GAIN_1);
+    veml.setIntegrationTime(VEML7700_IT_800MS);
+    veml.setLowThreshold(10000);
+    veml.setHighThreshold(20000);
+    veml.interruptEnable(true);
+  }
+  
+  //===================================
+  if (!aht.begin()) {
+    Serial.print("Temperature and humidity sensors not found");
+  } else {
+    Serial.print("Temperature and humidity sensors found");
+    aht_detected = true;
+  }
 }
 
 void loop() {
@@ -103,21 +122,23 @@ void loop() {
     // send message, the Print interface can be used to set the message contents
     mqttClient.beginMessage(topic);
     
-//    mqttClient.print("hello ");
-//    mqttClient.print(count);
+    //===================================
+    // temp
+    sensors_event_t humidity, temp;
+    aht.getEvent(&humidity, &temp);
+    float tf = (temp.temperature/5.0) * 9 + 32;
 
-//===================================
-    // temp, https://protosupplies.com/product/lm35-analog-temp-sensor/
-    float tc = (analogRead(T_PIN)/1024.0) * 3.3 * 100;
-    float tf = (tc/5) * 9 + 32;
+    // humidity
+    float hm = humidity.relative_humidity;
     
     // lumen
-    float l = analogRead(L_PIN);    
+    float l = veml.readLux();    
     
-//===================================
+    //===================================
     DynamicJsonDocument doc(256); 
     doc["client"] = clientId;
     doc["temp"]= tf;
+    doc["humidity"] = hm;
     doc["lumen"]= l;
     
     char json[256];
@@ -126,7 +147,7 @@ void loop() {
     Serial.print("Sending message to topic: ");
     Serial.println(topic);
     Serial.println(json);
-//===================================
+    //===================================
     mqttClient.print(json);
     
     mqttClient.endMessage();

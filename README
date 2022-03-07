@@ -35,6 +35,9 @@ Components
         credential: admin/admin
 
 7. arduino the publisher, upload to mkr 1010, 
+        https://docs.arduino.cc/tutorials/mkr-wifi-1010/connecting-to-wifi-network
+        https://docs.arduino.cc/tutorials/mkr-wifi-1010/mqtt-device-to-device
+        
         topic: 'sensor/json'
 
 Reference: 
