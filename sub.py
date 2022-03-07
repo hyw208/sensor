@@ -42,7 +42,7 @@ def dump2(d):
     print(cmd)
     os.system(cmd)
 
-    cmd = "echo" + " 'arduino_air_humidity{{client=\"{client}\"}} {humidity:.2f}' ".format(client=client, humidity=d["humidity"]) + " > " + " {}/{}_humidity.prom ".format(path, client)
+    cmd = "echo" + " 'arduino_air_humidity{{client=\"{client}\"}} {humidity:.2f}' ".format(client=client, humidity=d.get("humidity", 0)) + " > " + " {}/{}_humidity.prom ".format(path, client)
     print(cmd)
     os.system(cmd)
 
@@ -50,6 +50,6 @@ clientId = "subscriber"
 client = mqtt.Client(clientId)
 client.on_connect = on_connect
 client.on_message = on_message
-client.connect("IP_ADDRESS", 1883, 60)
+client.connect("192.168.1.180", 1883, 60)
 client.loop_forever()
 
